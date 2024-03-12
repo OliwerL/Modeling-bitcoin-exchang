@@ -10,7 +10,7 @@ This tool is designed to forecast Bitcoin prices by leveraging historical data o
 ### Data Processing
 - **Data Loading**: The program begins by loading historical data from JSON files. This data encompasses market prices and total Bitcoins in circulation over time.
 - **Data Filtering**: To enhance the accuracy of predictions, the data is filtered based on a specified time range. This ensures the model focuses on relevant data points for forecasting.
-<pre>
+```Go
 func filterData(data BlockchainData, startYear, endYear int) BlockchainData {
 	filtered := BlockchainData{}
 	for _, entry := range data.MarketPrice {
@@ -27,11 +27,11 @@ func filterData(data BlockchainData, startYear, endYear int) BlockchainData {
 	}
 	return filtered
 }
-</pre>
+```
 
 ### Forecasting Model
 - **Rolling Window Approach**: The forecasting model employs a rolling window approach to analyze data segments sequentially, allowing for dynamic adaptation to new data.
-<pre>
+```Go
 func rollingWindowForecast(data BlockchainData, windowSize int) ([]float64, []time.Time) {
 	var forecastedPrices []float64
 	var timestamps []time.Time
@@ -81,9 +81,9 @@ func rollingWindowForecast(data BlockchainData, windowSize int) ([]float64, []ti
 
 	return forecastedPrices, timestamps
 }
-</pre>
+```
 - **Linear Regression**: For each data segment within the rolling window, a linear regression model is trained. This model identifies relationships between market prices, the total number of Bitcoins, and their impact on future prices.
-<pre>
+```Go
 func trainAndForecast(prices []float64, volumeDiffs []float64) (float64, float64, float64, float64) {
     priceDifferences := calculateDifferences(prices)
     volume := calculateDifferences(volumeDiffs)
@@ -93,9 +93,9 @@ func trainAndForecast(prices []float64, volumeDiffs []float64) (float64, float64
 
     return predictedPrice, intercept, slopePrice, slopeVolume
 }
-</pre>
+```
 - **Parameter Calculation**: The model calculates key parameters, including intercept, slope for price, and slope for volume, which are crucial for making predictions.
-<pre>
+```Go
 func linearRegression(y, x1, x2 []float64) (float64, float64, float64) {
     X := mat.NewDense(len(y), 3, nil)
     Y := mat.NewVecDense(len(y), y)
@@ -117,10 +117,10 @@ func linearRegression(y, x1, x2 []float64) (float64, float64, float64) {
 
     return intercept, slopePrice, slopeVolume
 }
-</pre>
+```
 ### Performance Evaluation
 - **Forecast Generation**: After training, the model generates forecasts for Bitcoin prices and compares them with actual historical prices.
-<pre>
+```Go
 func calculateMSE(actual, predicted []float64) float64 {
     var sumError float64
     for i := range actual {
@@ -130,9 +130,9 @@ func calculateMSE(actual, predicted []float64) float64 {
     meanSquaredError := sumError / float64(len(actual))
     return meanSquaredError
 }
-</pre>
+```
 - **Error Metrics**: The model evaluates its performance by calculating the Mean Squared Error (MSE) and Mean Absolute Percentage Error (MAPE), providing insights into its accuracy.
-<pre>
+```Go
 func calculateMAPE(actual, predicted []float64) float64 {
     var sumError float64
     for i := range actual {
@@ -143,7 +143,6 @@ func calculateMAPE(actual, predicted []float64) float64 {
     meanAbsolutePercentageError := (sumError / float64(len(actual))) * 100
     return meanAbsolutePercentageError
 }
-
-</pre>
+```
 
 
